@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mecaniq.app.ui.ordemservico.NovaOSContract.Intent
+import androidx.compose.ui.platform.LocalUriHandler
+import com.mecaniq.app.data.models.OrdemServicoDTO
+import com.mecaniq.app.utils.WhatsAppUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,6 +25,17 @@ fun NovaOSScreen(
     onVoltarOuConcluir: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    // Dentro do seu composable NovaOSScreen:
+    val uriHandler = LocalUriHandler.current
+
+    // Ao disparar o efeito OSEmitidaComSucesso ou via botão de ação direta:
+    fun abrirWhatsApp(telefoneCliente: String, mensagem: String) {
+        val numeroLimpo = telefoneCliente.filter { it.isDigit() }
+        val mensagemEncodada = WhatsAppUtil.encodeParam(mensagem)
+
+        val url = "https://api.whatsapp.com/send?phone=$numeroLimpo&text=$mensagemEncodada"
+        uriHandler.openUri(url)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
@@ -181,6 +195,47 @@ fun NovaOSScreen(
                         }
                     }
                 }
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = { viewModel.handleIntent(NovaOSContract.Intent.EmitirOrdemServico) },
+                enabled = !state.isEmitting,
+                modifier = Modifier.weight(1f)
+            ) {
+                if (state.isEmitting) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp), color = MaterialTheme.colorScheme.onPrimary)
+                } else {
+                    Text("Emitir OS")
+                }
+            }
+
+            OutlinedButton(
+                onClick = {
+                    val mensagem = WhatsAppUtil.gerarMensagemOS(
+                        os = OrdemServicoDTO(
+                            id = "OS-TEMP",
+                            oficinaId = state.oficinaId,
+                            veiculoId = state.veiculoId,
+                            status = "ABERTA",
+                            kmEntrada = state.kmEntradaInput.toIntOrNull() ?: 0,
+                            valorTotal = state.valorTotal,
+                            observacoes = state.observacoesInput,
+                            itens = state.itens
+                        ),
+                        modeloVeiculo = "Veículo",
+                        placa = state.veiculoId
+                    )
+                    abrirWhatsApp("5554999999999", mensagem)
+                },
+                enabled = state.itens.isNotEmpty(),
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Enviar Whats 📲")
             }
         }
     }
