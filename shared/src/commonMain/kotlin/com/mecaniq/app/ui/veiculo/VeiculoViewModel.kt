@@ -90,7 +90,7 @@ class VeiculoViewModel(
             _uiState.update { it.copy(isSalvando = true, mensagemErro = null) }
 
             val request = CriarVeiculoRequest(
-                clienteId = currentState.clienteIdInput.ifBlank { "cliente-default-id" },
+                clienteId = "4c1cedf1-b538-4c6d-b4c3-88132fe5dcbb",
                 placa = currentState.placaBusca,
                 modelo = currentState.modeloInput,
                 marca = currentState.marcaInput,

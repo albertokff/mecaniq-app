@@ -1,32 +1,40 @@
 package com.mecaniq.app.network
 
 import de.jensklingenberg.ktorfit.Ktorfit
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.client.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 object ApiClient {
-    const val BASE_URL = "http://10.0.2.2:8080"
-    //const val BASE_URL = "http://servidorhomologacao.com.br"
+    const val BASE_URL = "http://192.168.0.8:8080/"
 
-    val httpClient = HttpClient {
-        install(ContentNegotiation) {
-            json(Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            })
-        }
-        install(Logging) {
-            level = LogLevel.ALL
+    val httpClient by lazy {
+        HttpClient {
+            install(ContentNegotiation) {
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
+            }
+            install(Logging) {
+                level = LogLevel.ALL
+            }
         }
     }
 
-    val ktorfit: Ktorfit = Ktorfit.Builder()
-        .baseUrl(BASE_URL)
-        .httpClient(httpClient)
-        .build()
+    val ktorfit: Ktorfit by lazy {
+        Ktorfit.Builder()
+            .baseUrl(BASE_URL)
+            .httpClient(httpClient)
+            .build()
+    }
+
+    // Instâncias Lazy das APIs
+    val veiculoApi: VeiculoApi by lazy { ktorfit.createVeiculoApi() }
+    val clienteApi: ClienteApi by lazy { ktorfit.createClienteApi() }
+    val ordemServicoApi: OrdemServicoApi by lazy { ktorfit.createOrdemServicoApi() }
+    val alertaApi: AlertaApi by lazy { ktorfit.createAlertaApi() }
 }
