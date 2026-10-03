@@ -1,5 +1,6 @@
 package com.mecaniq.app.network
 
+import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
@@ -23,4 +24,9 @@ object ApiClient {
             level = LogLevel.ALL
         }
     }
+
+    val ktorfit: Ktorfit = Ktorfit.Builder()
+        .baseUrl(BASE_URL)
+        .httpClient(httpClient)
+        .build()
 }
