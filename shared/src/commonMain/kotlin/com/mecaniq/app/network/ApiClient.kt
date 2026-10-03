@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 
 object ApiClient {
     const val BASE_URL = "http://10.0.2.2:8080"
+    //const val BASE_URL = "http://servidorhomologacao.com.br"
 
     val httpClient = HttpClient {
         install(ContentNegotiation) {

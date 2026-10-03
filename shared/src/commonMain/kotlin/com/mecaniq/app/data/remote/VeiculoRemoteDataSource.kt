@@ -1,7 +1,7 @@
 package com.mecaniq.app.data.remote
 
-import com.mecaniq.app.data.CriarVeiculoRequest
-import com.mecaniq.app.data.VeiculoDTO
+import com.mecaniq.app.data.models.CriarVeiculoRequest
+import com.mecaniq.app.data.models.VeiculoDTO
 import com.mecaniq.app.network.ApiClient
 import com.mecaniq.app.network.VeiculoEndpoints
 import io.ktor.client.call.body
