@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.logging)
             implementation(libs.ktorfit.lib)
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
