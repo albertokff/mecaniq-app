@@ -11,7 +11,9 @@ import com.mecaniq.app.navigation.Screen
 import com.mecaniq.app.ui.alerta.AlertaScreen
 import com.mecaniq.app.ui.auth.LoginScreen
 import com.mecaniq.app.ui.dashboard.DashboardScreen
+import com.mecaniq.app.ui.onboarding.OnboardingScreen
 import com.mecaniq.app.ui.ordemservico.NovaOSScreen
+import com.mecaniq.app.ui.splash.SplashScreen
 import com.mecaniq.app.ui.theme.OficinaTheme
 import com.mecaniq.app.ui.veiculo.VeiculoScreen
 
@@ -24,9 +26,28 @@ fun App() {
             color = MaterialTheme.colorScheme.background
         ) {
             // Gerenciador de estado de navegação atual
-            var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
+            var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
 
             when (val screen = currentScreen) {
+                is Screen.Splash -> {
+                    SplashScreen(
+                        onNavigateToDashboard = {
+                            currentScreen = Screen.Dashboard
+                        },
+                        onNavigateToOnboarding = {
+                            currentScreen = Screen.OnBoarding
+                        }
+                    )
+                }
+
+                is Screen.OnBoarding -> {
+                    OnboardingScreen(
+                        onFinishOnboarding = {
+                            currentScreen = Screen.Login
+                        }
+                    )
+                }
+
                 is Screen.Login -> {
                     LoginScreen(
                         viewModel = remember { AppModule.provideLoginViewModel() },
@@ -69,6 +90,8 @@ fun App() {
                         veiculoId = screen.veiculoId
                     )
                 }
+
+                else -> {}
             }
         }
     }
