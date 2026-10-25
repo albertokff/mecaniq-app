@@ -6,19 +6,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.mecaniq.app.di.AppModule
+import com.mecaniq.app.navigation.Screen
 import com.mecaniq.app.ui.alerta.AlertaScreen
+import com.mecaniq.app.ui.auth.LoginScreen
 import com.mecaniq.app.ui.dashboard.DashboardScreen
 import com.mecaniq.app.ui.ordemservico.NovaOSScreen
 import com.mecaniq.app.ui.theme.OficinaTheme
 import com.mecaniq.app.ui.veiculo.VeiculoScreen
-
-// Rotas da Aplicação
-sealed interface Screen {
-    data object Dashboard : Screen
-    data class Veiculo(val placaInicial: String = "") : Screen
-    data class NovaOS(val veiculoId: String = "") : Screen
-    data class Alertas(val veiculoId: String = "") : Screen
-}
 
 @Composable
 @Preview
@@ -28,10 +23,19 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            // Gerenciador simples de estado de tela atual
-            var currentScreen by remember { mutableStateOf<Screen>(Screen.Dashboard) }
+            // Gerenciador de estado de navegação atual
+            var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
 
             when (val screen = currentScreen) {
+                is Screen.Login -> {
+                    LoginScreen(
+                        viewModel = remember { AppModule.provideLoginViewModel() },
+                        onLoginSuccess = {
+                            currentScreen = Screen.Dashboard
+                        }
+                    )
+                }
+
                 is Screen.Dashboard -> {
                     DashboardScreen(
                         onNavegarParaNovaOS = {
