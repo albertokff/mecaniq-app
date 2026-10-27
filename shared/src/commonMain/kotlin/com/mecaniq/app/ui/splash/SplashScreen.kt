@@ -46,7 +46,7 @@ fun SplashScreen(
     )
 
     LaunchedEffect(Unit) {
-        delay(1500)
+        delay(1000)
         if (SessionManager.isUserLoggedIn()) {
             onNavigateToDashboard()
         } else {
